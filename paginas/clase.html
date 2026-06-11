@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clase - Registro de Actividades Estudiantiles</title>
+    <link rel="stylesheet" href="../src/css/styles.css" />
+  </head>
+  <body data-page="class-detail">
+    <header>
+      <h1>Registro de Actividades Estudiantiles</h1>
+      <p>Actividades y puntajes de la clase seleccionada.</p>
+    </header>
+
+    <main>
+      <section>
+        <button id="backToHome" class="secondary">← Volver a la página principal</button>
+        <div class="page-title">
+          <h2 id="classTitle">Clase</h2>
+          <p id="classSubtitle" class="muted"></p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Agregar actividad o pregunta</h2>
+        <div class="grid">
+          <label>
+            Nombre de actividad
+            <input id="activityName" placeholder="Ej: Pregunta 1" />
+          </label>
+          <label>
+            Puntaje máximo
+            <input id="activityMax" type="number" min="0" step="0.1" placeholder="Ej: 4" />
+          </label>
+          <div class="row">
+            <button id="addActivity">Agregar actividad</button>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Actividades registradas</h2>
+        <div id="activitiesList"></div>
+      </section>
+
+      <section>
+        <div class="row table-header">
+          <h2>Registro de estudiantes</h2>
+          <button id="exportCsv" class="secondary">Exportar CSV</button>
+        </div>
+        <p class="muted">La tabla muestra todos los estudiantes aunque la clase todavía no tenga actividades.</p>
+        <div id="gradesTable"></div>
+      </section>
+    </main>
+
+    <script src="../src/js/utils.js"></script>
+    <script src="../src/js/storage.js"></script>
+    <script src="../src/js/students.js"></script>
+    <script src="../src/js/classes.js"></script>
+    <script src="../src/js/class-detail.js"></script>
+    <script src="../src/js/backup.js"></script>
+    <script src="../src/js/app.js"></script>
+  </body>
+</html>

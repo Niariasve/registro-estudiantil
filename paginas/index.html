@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registro de Actividades Estudiantiles</title>
+    <link rel="stylesheet" href="../src/css/styles.css" />
+  </head>
+  <body data-page="home">
+    <header>
+      <h1>Registro de Actividades Estudiantiles</h1>
+      <p>Sistema de registro de clases y actividades estudiantiles.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Clases registradas</h2>
+        <div class="row">
+          <label>
+            Nueva clase
+            <input id="className" placeholder="Ej: Clase 1" />
+          </label>
+          <button id="addClass">Agregar clase</button>
+        </div>
+        <p class="muted">Entrá a cada clase para registrar sus actividades y puntajes.</p>
+        <div id="classesList" class="cards-list"></div>
+      </section>
+
+      <section>
+        <h2>Estudiantes registrados</h2>
+        <div class="grid">
+          <label>
+            Agregar estudiante
+            <input id="studentName" placeholder="Nombres y apellidos" />
+          </label>
+          <div class="row">
+            <button id="addStudent">Agregar estudiante</button>
+          </div>
+        </div>
+        <label class="bulk-students-label">
+          Carga rápida, un estudiante por línea
+          <textarea id="bulkStudents" placeholder="Noelia Burgos Bajaña&#10;Carlos Mateo Flores Burgos"></textarea>
+        </label>
+        <div class="toolbar students-actions">
+          <button id="importStudents" class="secondary">Cargar lista</button>
+          <button id="clearStudents" class="danger">Eliminar todos los estudiantes</button>
+        </div>
+        <div id="studentsList" class="section-content"></div>
+      </section>
+
+      <section>
+        <h2>Respaldo</h2>
+        <div class="toolbar">
+          <button id="exportBackup" class="secondary">Exportar respaldo</button>
+          <label class="backup-import-label">
+            Importar respaldo
+            <input id="importBackup" type="file" accept="application/json" hidden />
+          </label>
+        </div>
+      </section>
+    </main>
+
+    <script src="../src/js/utils.js"></script>
+    <script src="../src/js/storage.js"></script>
+    <script src="../src/js/students.js"></script>
+    <script src="../src/js/classes.js"></script>
+    <script src="../src/js/class-detail.js"></script>
+    <script src="../src/js/backup.js"></script>
+    <script src="../src/js/app.js"></script>
+  </body>
+</html>

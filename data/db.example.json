@@ -1,0 +1,12 @@
+{
+  "selectedClassId": "class-1",
+  "classes": [
+    {
+      "id": "class-1",
+      "name": "Clase 1",
+      "activities": []
+    }
+  ],
+  "students": [],
+  "grades": {}
+}
