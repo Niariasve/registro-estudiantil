@@ -1,17 +1,25 @@
 const ClassesModule = (() => {
   const { byId, escapeHtml, formatScore, uid } = AppUtils;
 
-  function addClass() {
+  async function addClass() {
     const input = byId('className');
     const name = input.value.trim();
     if (!name) return alert('Escribí el nombre de la clase.');
     const classItem = { id: uid('class'), name, activities: [] };
     const data = AppStorage.getData();
+    const previousSelectedClassId = data.selectedClassId;
     data.classes.push(classItem);
     data.selectedClassId = classItem.id;
-    input.value = '';
-    App.render();
-    App.showClass(classItem.id);
+
+    try {
+      await AppStorage.persistNow();
+      input.value = '';
+      App.showClass(classItem.id);
+    } catch {
+      data.classes = data.classes.filter((item) => item.id !== classItem.id);
+      data.selectedClassId = previousSelectedClassId;
+      alert('No se pudo guardar la clase en la base de datos local.');
+    }
   }
 
   function deleteClass(classId) {

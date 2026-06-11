@@ -55,6 +55,7 @@ const AppStorage = (() => {
   }
 
   async function persistNow() {
+    clearTimeout(saveTimer);
     const response = await fetch(API_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
