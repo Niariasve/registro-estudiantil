@@ -42,5 +42,46 @@ const AppUtils = (() => {
     URL.revokeObjectURL(url);
   }
 
-  return { byId, downloadFile, escapeHtml, formatScore, normalizeScore, toCsv, uid };
+  /**
+   * Modal de confirmación personalizado en HTML.
+   * Reemplaza el confirm() nativo del navegador.
+   * Devuelve una Promise<boolean>.
+   */
+  function confirmModal(message) {
+    return new Promise((resolve) => {
+      // Reutilizar modal existente o crear uno nuevo
+      let overlay = byId('_confirmModalOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = '_confirmModalOverlay';
+        overlay.innerHTML = `
+          <div id="_confirmModalBox">
+            <p id="_confirmModalMsg"></p>
+            <div class="confirm-modal-actions">
+              <button id="_confirmModalCancel" class="secondary">Cancelar</button>
+              <button id="_confirmModalOk" class="danger">Eliminar</button>
+            </div>
+          </div>`;
+        document.body.appendChild(overlay);
+      }
+
+      byId('_confirmModalMsg').textContent = message;
+      overlay.classList.add('visible');
+
+      function cleanup(result) {
+        overlay.classList.remove('visible');
+        byId('_confirmModalOk').onclick = null;
+        byId('_confirmModalCancel').onclick = null;
+        overlay.onclick = null;
+        resolve(result);
+      }
+
+      byId('_confirmModalOk').onclick = () => cleanup(true);
+      byId('_confirmModalCancel').onclick = () => cleanup(false);
+      // Click fuera del box = cancelar
+      overlay.onclick = (e) => { if (e.target === overlay) cleanup(false); };
+    });
+  }
+
+  return { byId, confirmModal, downloadFile, escapeHtml, formatScore, normalizeScore, toCsv, uid };
 })();

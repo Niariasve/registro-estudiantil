@@ -1,3 +1,6 @@
+// Servidor de desarrollo local y fallback offline.
+// En producción, si se configura Firebase en el frontend, la persistencia se realiza
+// directamente en Cloud Firestore y este servidor no es requerido (servidor estático).
 const http = require('node:http');
 const { readFile, writeFile, mkdir, stat } = require('node:fs/promises');
 const { createReadStream } = require('node:fs');

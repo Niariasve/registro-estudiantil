@@ -1,0 +1,45 @@
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.metric-card {
+  border: 1px solid #cfd6e1;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.metric-card span {
+  display: block;
+  color: #59677d;
+  margin-bottom: 0.45rem;
+}
+
+.metric-card strong {
+  display: block;
+  font-size: 1.65rem;
+}
+
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.chart-panel {
+  min-width: 0;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  min-height: 330px;
+}
+
+@media (max-width: 640px) {
+  .chart-container {
+    min-height: 280px;
+  }
+}

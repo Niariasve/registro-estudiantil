@@ -1,11 +1,11 @@
 const ClassDetailModule = (() => {
-  const { byId, downloadFile, escapeHtml, formatScore, normalizeScore, toCsv, uid } = AppUtils;
+  const { byId, confirmModal, downloadFile, escapeHtml, formatScore, normalizeScore, toCsv, uid } = AppUtils;
 
   function gradeKey(studentId, activityId) {
     return `${studentId}:${activityId}`;
   }
 
-  function addActivity() {
+  async function addActivity() {
     const currentClass = AppStorage.selectedClass();
     const nameInput = byId('activityName');
     const scoreInput = byId('activityMax');
@@ -16,21 +16,25 @@ const ClassDetailModule = (() => {
     currentClass.activities.push({ id: uid('activity'), name, maxScore });
     nameInput.value = '';
     scoreInput.value = '';
+    await AppStorage.persistNow();
     App.render();
   }
 
-  function deleteActivity(activityId) {
+  async function deleteActivity(activityId) {
     const currentClass = AppStorage.selectedClass();
     const activity = currentClass.activities.find((item) => item.id === activityId);
-    if (!activity || !confirm(`¿Eliminar ${activity.name}? También se eliminarán sus notas.`)) return;
+    if (!activity) return;
+    const confirmed = await confirmModal(`¿Eliminar "${activity.name}"? También se eliminarán sus notas.`);
+    if (!confirmed) return;
     currentClass.activities = currentClass.activities.filter((item) => item.id !== activityId);
     Object.keys(AppStorage.getData().grades).forEach((key) => {
       if (key.endsWith(`:${activityId}`)) delete AppStorage.getData().grades[key];
     });
     App.render();
+    await AppStorage.persistNow();
   }
 
-  function editActivity(activityId) {
+  async function editActivity(activityId) {
     const activity = AppStorage.selectedClass().activities.find((item) => item.id === activityId);
     if (!activity) return;
 
@@ -47,6 +51,7 @@ const ClassDetailModule = (() => {
     activity.name = cleanName;
     activity.maxScore = cleanMaxScore;
     trimGradesAboveMax(activity.id, cleanMaxScore);
+    await AppStorage.persistNow();
     App.render();
   }
 
@@ -95,9 +100,23 @@ const ClassDetailModule = (() => {
   }
 
   function renderGradesTable(currentClass) {
-    const students = AppStorage.getData().students;
+    let students = AppStorage.getData().students;
     if (!students.length) {
       byId('gradesTable').innerHTML = '<div class="empty">Primero registrá estudiantes desde la página principal.</div>';
+      return;
+    }
+
+    const searchInput = byId('searchClassStudent');
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+    if (query) {
+      students = students.filter((student) =>
+        student.name.toLowerCase().includes(query)
+      );
+    }
+
+    if (!students.length) {
+      byId('gradesTable').innerHTML = `<div class="empty">No se encontraron estudiantes que coincidan con "${escapeHtml(query)}".</div>`;
       return;
     }
 
@@ -146,12 +165,35 @@ const ClassDetailModule = (() => {
       </div>`;
   }
 
-  function updateGrade(input) {
+  async function updateGrade(input) {
     const value = normalizeScore(input.value);
     const max = Number(input.dataset.max);
-    if (value === '') delete AppStorage.getData().grades[input.dataset.grade];
-    else AppStorage.getData().grades[input.dataset.grade] = Math.min(value, max);
-    App.render();
+    const key = input.dataset.grade;
+
+    if (value === '') {
+      delete AppStorage.getData().grades[key];
+      input.value = '';
+    } else {
+      const clamped = Math.min(value, max);
+      AppStorage.getData().grades[key] = clamped;
+      // Corregir el valor en el input si se excedió el máximo
+      if (clamped !== value) input.value = formatScore(clamped);
+    }
+
+    // Actualizar solo el total de esta fila sin re-renderizar toda la tabla
+    const row = input.closest('tr');
+    if (row) {
+      const currentClass = AppStorage.selectedClass();
+      const [studentId] = key.split(':');
+      const total = currentClass.activities.reduce((sum, activity) => {
+        const v = AppStorage.getData().grades[gradeKey(studentId, activity.id)];
+        return sum + (Number(v) || 0);
+      }, 0);
+      const totalCell = row.querySelector('.total');
+      if (totalCell) totalCell.textContent = formatScore(total);
+    }
+
+    await AppStorage.persistNow();
   }
 
   function exportCsv() {
@@ -166,8 +208,17 @@ const ClassDetailModule = (() => {
   }
 
   function bindEvents() {
-    byId('addActivity').addEventListener('click', addActivity);
-    byId('exportCsv').addEventListener('click', exportCsv);
+    const addBtn = byId('addActivity');
+    if (addBtn) addBtn.addEventListener('click', addActivity);
+    const exportBtn = byId('exportCsv');
+    if (exportBtn) exportBtn.addEventListener('click', exportCsv);
+    const searchInput = byId('searchClassStudent');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const currentClass = AppStorage.selectedClass();
+        if (currentClass) renderGradesTable(currentClass);
+      });
+    }
   }
 
   return { bindEvents, deleteActivity, editActivity, renderClassDetail, updateGrade };

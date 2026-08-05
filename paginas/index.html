@@ -8,19 +8,27 @@
   </head>
   <body data-page="home">
     <header>
-      <h1>Registro de Actividades Estudiantiles</h1>
-      <p>Sistema de registro de clases y actividades estudiantiles.</p>
+      <div class="header-info">
+        <h1>Registro de Actividades Estudiantiles</h1>
+        <p>Sistema de registro de clases y actividades estudiantiles.</p>
+      </div>
     </header>
 
     <main>
       <section>
-        <h2>Clases registradas</h2>
+        <div class="row table-header">
+          <h2>Clases registradas</h2>
+          <a class="button secondary" href="dashboard.html">Ver dashboard</a>
+        </div>
         <div class="row">
           <label>
             Nueva clase
             <input id="className" placeholder="Ej: Clase 1" />
           </label>
           <button id="addClass">Agregar clase</button>
+        </div>
+        <div class="search-filter-bar">
+          <input id="searchClass" type="search" placeholder="🔍 Buscar clase por nombre..." class="search-input" />
         </div>
         <p class="muted">Entrá a cada clase para registrar sus actividades y puntajes.</p>
         <div id="classesList" class="cards-list"></div>
@@ -45,6 +53,14 @@
           <button id="importStudents" class="secondary">Cargar lista</button>
           <button id="clearStudents" class="danger">Eliminar todos los estudiantes</button>
         </div>
+        <div class="search-filter-bar row">
+          <input id="searchStudent" type="search" placeholder="🔍 Buscar estudiante..." class="search-input" />
+          <select id="sortStudents" class="filter-select">
+            <option value="default">Orden: Por registro</option>
+            <option value="az">Orden: Nombre A – Z</option>
+            <option value="za">Orden: Nombre Z – A</option>
+          </select>
+        </div>
         <div id="studentsList" class="section-content"></div>
       </section>
 
@@ -60,7 +76,12 @@
       </section>
     </main>
 
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <script src="../src/js/utils.js"></script>
+    <script src="../src/js/config.js"></script>
     <script src="../src/js/storage.js"></script>
     <script src="../src/js/students.js"></script>
     <script src="../src/js/classes.js"></script>
