@@ -8,10 +8,8 @@
   </head>
   <body data-page="class-detail">
     <header>
-      <div class="header-info">
-        <h1>Registro de Actividades Estudiantiles</h1>
-        <p>Actividades y puntajes de la clase seleccionada.</p>
-      </div>
+      <h1>Registro de Actividades Estudiantiles</h1>
+      <p>Actividades y puntajes de la clase seleccionada.</p>
     </header>
 
     <main>
@@ -48,22 +46,14 @@
       <section>
         <div class="row table-header">
           <h2>Registro de estudiantes</h2>
-          <div class="row">
-            <input id="searchClassStudent" type="search" placeholder="🔍 Buscar estudiante en la clase..." class="search-input" />
-            <button id="exportCsv" class="secondary">Exportar CSV</button>
-          </div>
+          <button id="exportCsv" class="secondary">Exportar CSV</button>
         </div>
         <p class="muted">La tabla muestra todos los estudiantes aunque la clase todavía no tenga actividades.</p>
         <div id="gradesTable"></div>
       </section>
     </main>
 
-    <!-- Firebase SDK Compat -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
     <script src="../src/js/utils.js"></script>
-    <script src="../src/js/config.js"></script>
     <script src="../src/js/storage.js"></script>
     <script src="../src/js/students.js"></script>
     <script src="../src/js/classes.js"></script>
