@@ -1,0 +1,33 @@
+{
+  "selectedClassId": "class-1",
+  "classes": [
+    {
+      "id": "class-1",
+      "name": "Clase 1",
+      "activities": []
+    },
+    {
+      "id": "class-1784677753367-f6e8433573e49",
+      "name": "clase 1",
+      "activities": [
+        {
+          "id": "activity-1784677763394-26cb2ed3ee295",
+          "name": "pg",
+          "maxScore": 5
+        },
+        {
+          "id": "activity-1784677770197-143ab16ce88bd8",
+          "name": "pg2",
+          "maxScore": 8
+        }
+      ]
+    },
+    {
+      "id": "class-1784677827463-c287f045c7f34",
+      "name": "clas 2",
+      "activities": []
+    }
+  ],
+  "students": [],
+  "grades": {}
+}

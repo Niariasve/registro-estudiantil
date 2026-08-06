@@ -9,37 +9,51 @@ const App = (() => {
     window.location.href = 'index.html';
   }
 
+  function showDashboard() {
+    window.location.href = 'dashboard.html';
+  }
+
   function showClass(classId) {
     AppStorage.setSelectedClass(classId);
     window.location.href = `clase.html?id=${encodeURIComponent(classId)}`;
   }
 
   function render() {
-    AppStorage.save();
     if (currentPage() === 'home') {
       StudentsModule.renderStudentsList();
       ClassesModule.renderClassesList();
     }
+
     if (currentPage() === 'class-detail') {
       ClassDetailModule.renderClassDetail();
+    }
+
+    if (currentPage() === 'dashboard') {
+      DashboardModule.renderDashboard();
     }
   }
 
   function restoreRoute() {
     if (currentPage() !== 'class-detail') return;
+
     const params = new URLSearchParams(window.location.search);
     const classId = params.get('id');
-    if (classId && AppStorage.getData().classes.some((item) => item.id === classId)) {
-      AppStorage.setSelectedClass(classId);
-    } else {
+    const classExists = AppStorage.getData().classes.some(
+      (item) => item.id === classId
+    );
+
+    if (!classId || !classExists) {
       showHome();
+      return;
     }
+
+    AppStorage.setSelectedClass(classId);
   }
 
   async function init() {
     await AppStorage.init();
-    bindEvents();
     restoreRoute();
+    bindEvents();
     render();
   }
 
@@ -51,12 +65,20 @@ const App = (() => {
     }
 
     if (currentPage() === 'class-detail') {
-      byId('backToHome').addEventListener('click', showHome);
+      byId('backToHome')?.addEventListener('click', showHome);
+      byId('goToDashboard')?.addEventListener('click', showDashboard);
       ClassDetailModule.bindEvents();
     }
 
+    if (currentPage() === 'dashboard') {
+      byId('backToHome')?.addEventListener('click', showHome);
+      DashboardModule.bindEvents();
+    }
+
     document.addEventListener('change', (event) => {
-      if (event.target.matches('[data-grade]')) ClassDetailModule.updateGrade(event.target);
+      if (event.target.matches('[data-grade]')) {
+        ClassDetailModule.updateGrade(event.target);
+      }
     });
 
     document.addEventListener('click', (event) => {
@@ -78,7 +100,7 @@ const App = (() => {
     });
   }
 
-  return { init, render, showClass, showHome };
+  return { init, render, showClass, showDashboard, showHome };
 })();
 
 document.addEventListener('DOMContentLoaded', () => {

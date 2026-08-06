@@ -14,7 +14,11 @@
 
     <main>
       <section>
-        <h2>Clases registradas</h2>
+        <div class="row table-header">
+          <h2>Clases registradas</h2>
+          <a class="button secondary" href="dashboard.html">Ver dashboard</a>
+        </div>
+
         <div class="row">
           <label>
             Nueva clase
@@ -22,7 +26,8 @@
           </label>
           <button id="addClass">Agregar clase</button>
         </div>
-        <p class="muted">Entrá a cada clase para registrar sus actividades y puntajes.</p>
+
+        <p class="muted">Entra a cada clase para registrar sus actividades y puntajes.</p>
         <div id="classesList" class="cards-list"></div>
       </section>
 
@@ -37,14 +42,17 @@
             <button id="addStudent">Agregar estudiante</button>
           </div>
         </div>
+
         <label class="bulk-students-label">
           Carga rápida, un estudiante por línea
           <textarea id="bulkStudents" placeholder="Noelia Burgos Bajaña&#10;Carlos Mateo Flores Burgos"></textarea>
         </label>
+
         <div class="toolbar students-actions">
           <button id="importStudents" class="secondary">Cargar lista</button>
           <button id="clearStudents" class="danger">Eliminar todos los estudiantes</button>
         </div>
+
         <div id="studentsList" class="section-content"></div>
       </section>
 
