@@ -1,5 +1,5 @@
 const ClassesModule = (() => {
-  const { byId, confirmModal, escapeHtml, formatScore, uid } = AppUtils;
+  const { byId, escapeHtml, formatScore, uid } = AppUtils;
 
   async function addClass() {
     const input = byId('className');
@@ -15,48 +15,29 @@ const ClassesModule = (() => {
       await AppStorage.persistNow();
       input.value = '';
       App.showClass(classItem.id);
-    } catch (err) {
-      console.error("Error al agregar clase:", err);
+    } catch {
       data.classes = data.classes.filter((item) => item.id !== classItem.id);
       data.selectedClassId = previousSelectedClassId;
-      alert('No se pudo guardar la clase en la base de datos.');
+      alert('No se pudo guardar la clase en la base de datos local.');
     }
   }
 
-  async function deleteClass(classId) {
+  function deleteClass(classId) {
     const data = AppStorage.getData();
+    if (data.classes.length === 1) return alert('Debe existir al menos una clase.');
     const classItem = data.classes.find((item) => item.id === classId);
-    if (!classItem) return;
-
-    const confirmed = await confirmModal(`¿Eliminar "${classItem.name}"? También se eliminarán sus actividades y notas.`);
-    if (!confirmed) return;
-
+    if (!classItem || !confirm(`¿Eliminar ${classItem.name}? También se eliminarán sus actividades y notas.`)) return;
     const activityIds = classItem.activities.map((activity) => activity.id);
     Object.keys(data.grades).forEach((key) => {
       if (activityIds.some((activityId) => key.endsWith(`:${activityId}`))) delete data.grades[key];
     });
-
     data.classes = data.classes.filter((item) => item.id !== classId);
-    if (data.selectedClassId === classId) {
-      data.selectedClassId = data.classes[0] ? data.classes[0].id : null;
-    }
-
-    // Actualizar UI inmediatamente antes de esperar Firestore
+    data.selectedClassId = data.classes[0].id;
     App.render();
-
-    try {
-      if (AppStorage.isFirebaseActive()) {
-        await AppStorage.deleteClassFromFirestore(classId);
-      } else {
-        await AppStorage.persistNow();
-      }
-    } catch (err) {
-      console.error("Error al eliminar clase:", err);
-      alert('Error al guardar los cambios al eliminar la clase.');
-    }
+    App.showHome();
   }
 
-  async function editClass(classId) {
+  function editClass(classId) {
     const classItem = AppStorage.getData().classes.find((item) => item.id === classId);
     if (!classItem) return;
     const nextName = prompt('Modificar nombre de la clase:', classItem.name);
@@ -64,29 +45,12 @@ const ClassesModule = (() => {
     const cleanName = nextName.trim();
     if (!cleanName) return alert('El nombre de la clase no puede quedar vacío.');
     classItem.name = cleanName;
-
-    try {
-      await AppStorage.persistNow();
-      App.render();
-    } catch (err) {
-      console.error("Error al modificar clase:", err);
-      alert('Error al guardar el nuevo nombre de la clase.');
-    }
+    App.render();
   }
 
   function renderClassesList() {
     const data = AppStorage.getData();
-    const searchInput = byId('searchClass');
-    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-
-    let filteredClasses = data.classes;
-    if (query) {
-      filteredClasses = filteredClasses.filter((item) =>
-        item.name.toLowerCase().includes(query)
-      );
-    }
-
-    const cards = filteredClasses.map((classItem) => {
+    const cards = data.classes.map((classItem) => {
       const maxScore = classItem.activities.reduce((sum, activity) => sum + (Number(activity.maxScore) || 0), 0);
       return `
         <article class="class-card">
@@ -102,20 +66,11 @@ const ClassesModule = (() => {
         </article>`;
     }).join('');
 
-    const emptyText = query
-      ? `No se encontraron clases que coincidan con "${escapeHtml(query)}".`
-      : 'Todavía no hay clases registradas.';
-
-    byId('classesList').innerHTML = cards || `<div class="empty">${emptyText}</div>`;
+    byId('classesList').innerHTML = cards || '<div class="empty">Todavía no hay clases registradas.</div>';
   }
 
   function bindEvents() {
-    const addBtn = byId('addClass');
-    if (addBtn) addBtn.addEventListener('click', addClass);
-    const searchInput = byId('searchClass');
-    if (searchInput) {
-      searchInput.addEventListener('input', renderClassesList);
-    }
+    byId('addClass').addEventListener('click', addClass);
   }
 
   return { bindEvents, deleteClass, editClass, renderClassesList };

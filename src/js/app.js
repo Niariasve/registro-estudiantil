@@ -15,16 +15,13 @@ const App = (() => {
   }
 
   function render() {
-    // IMPORTANTE: NO llamar AppStorage.save() aquí — crearía bucle infinito con Firestore
+    AppStorage.save();
     if (currentPage() === 'home') {
       StudentsModule.renderStudentsList();
       ClassesModule.renderClassesList();
     }
     if (currentPage() === 'class-detail') {
       ClassDetailModule.renderClassDetail();
-    }
-    if (currentPage() === 'dashboard') {
-      DashboardModule.renderDashboard();
     }
   }
 
@@ -58,31 +55,26 @@ const App = (() => {
       ClassDetailModule.bindEvents();
     }
 
-    if (currentPage() === 'dashboard') {
-      byId('backToHome').addEventListener('click', showHome);
-      DashboardModule.bindEvents();
-    }
-
     document.addEventListener('change', (event) => {
       if (event.target.matches('[data-grade]')) ClassDetailModule.updateGrade(event.target);
     });
 
     document.addEventListener('click', (event) => {
-      const openClassBtn = event.target.closest('[data-open-class]');
-      const deleteClassBtn = event.target.closest('[data-delete-class]');
-      const editClassBtn = event.target.closest('[data-edit-class]');
-      const deleteStudentBtn = event.target.closest('[data-delete-student]');
-      const editStudentBtn = event.target.closest('[data-edit-student]');
-      const deleteActivityBtn = event.target.closest('[data-delete-activity]');
-      const editActivityBtn = event.target.closest('[data-edit-activity]');
+      const openClassId = event.target.dataset.openClass;
+      const deleteClassId = event.target.dataset.deleteClass;
+      const editClassId = event.target.dataset.editClass;
+      const deleteStudentId = event.target.dataset.deleteStudent;
+      const editStudentId = event.target.dataset.editStudent;
+      const deleteActivityId = event.target.dataset.deleteActivity;
+      const editActivityId = event.target.dataset.editActivity;
 
-      if (openClassBtn) showClass(openClassBtn.dataset.openClass);
-      if (editClassBtn) ClassesModule.editClass(editClassBtn.dataset.editClass);
-      if (deleteClassBtn) ClassesModule.deleteClass(deleteClassBtn.dataset.deleteClass);
-      if (editStudentBtn) StudentsModule.editStudent(editStudentBtn.dataset.editStudent);
-      if (deleteStudentBtn) StudentsModule.deleteStudent(deleteStudentBtn.dataset.deleteStudent);
-      if (editActivityBtn) ClassDetailModule.editActivity(editActivityBtn.dataset.editActivity);
-      if (deleteActivityBtn) ClassDetailModule.deleteActivity(deleteActivityBtn.dataset.deleteActivity);
+      if (openClassId) showClass(openClassId);
+      if (editClassId) ClassesModule.editClass(editClassId);
+      if (deleteClassId) ClassesModule.deleteClass(deleteClassId);
+      if (editStudentId) StudentsModule.editStudent(editStudentId);
+      if (deleteStudentId) StudentsModule.deleteStudent(deleteStudentId);
+      if (editActivityId) ClassDetailModule.editActivity(editActivityId);
+      if (deleteActivityId) ClassDetailModule.deleteActivity(deleteActivityId);
     });
   }
 
