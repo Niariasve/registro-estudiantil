@@ -25,7 +25,6 @@ const ClassesModule = (() => {
     const codeInput = byId('modalClassCode');
     const termInput = byId('modalClassTerm');
     const idInput = byId('modalClassId');
-    const deleteBtn = byId('deleteClassModalBtn');
     const swatchesContainer = byId('modalColorSwatches');
 
     if (classIdToEdit) {
@@ -37,7 +36,6 @@ const ClassesModule = (() => {
       codeInput.value = classItem.code || '';
       termInput.value = classItem.term || 'I PAO 2026';
       selectedColor = classItem.color || colorPalette[0];
-      if (deleteBtn) deleteBtn.style.display = 'inline-block';
     } else {
       titleEl.textContent = 'Nueva clase';
       idInput.value = '';
@@ -45,7 +43,6 @@ const ClassesModule = (() => {
       codeInput.value = '';
       termInput.value = 'I PAO 2026';
       selectedColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-      if (deleteBtn) deleteBtn.style.display = 'none';
     }
 
     // Render swatches
@@ -198,7 +195,7 @@ const ClassesModule = (() => {
         return `
           <article class="course-card" data-open-class="${classItem.id}">
             <div class="course-card-banner" style="background-color: ${cardColor};">
-              <div class="card-menu-wrapper" onclick="event.stopPropagation();">
+              <div class="card-menu-wrapper">
                 <button class="card-menu-btn" title="Opciones de clase" data-toggle-menu="${classItem.id}">
                   ⋮
                 </button>
@@ -230,11 +227,6 @@ const ClassesModule = (() => {
     byId('closeClassModalBtn')?.addEventListener('click', closeClassModal);
     byId('cancelClassModalBtn')?.addEventListener('click', closeClassModal);
     byId('saveClassModalBtn')?.addEventListener('click', saveClassFromModal);
-
-    byId('deleteClassModalBtn')?.addEventListener('click', () => {
-      const id = byId('modalClassId')?.value;
-      if (id) deleteClass(id);
-    });
 
     byId('modalColorSwatches')?.addEventListener('click', (e) => {
       const swatch = e.target.closest('[data-color]');

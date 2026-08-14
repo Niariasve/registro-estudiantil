@@ -297,8 +297,8 @@ const ClassDetailModule = (() => {
   }
 
   function bindEvents() {
-    byId('addActivity').addEventListener('click', addActivity);
-    byId('exportCsv').addEventListener('click', exportCsv);
+    byId('addActivity')?.addEventListener('click', addActivity);
+    byId('exportCsv')?.addEventListener('click', exportCsv);
   }
 
   return {
