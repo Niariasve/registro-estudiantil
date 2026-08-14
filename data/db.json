@@ -1,0 +1,116 @@
+{
+  "selectedClassId": "class-1",
+  "classes": [
+    {
+      "id": "class-1",
+      "name": "Clase 1",
+      "code": "PARALELO 1",
+      "term": "I PAO 2026",
+      "color": "#2e7d32",
+      "activities": [
+        {
+          "id": "activity-1786687811261-dde20ee1662f8",
+          "name": "Pregunta 1",
+          "maxScore": 10
+        },
+        {
+          "id": "activity-1786688165494-7d60cd5925bb",
+          "name": "Test Diagnostico",
+          "maxScore": 10
+        },
+        {
+          "id": "activity-1786688609464-5eb44415431c78",
+          "name": "Pre-Test",
+          "maxScore": 10
+        },
+        {
+          "id": "activity-1786688668978-31465aa67bfcd",
+          "name": "Post-Test",
+          "maxScore": 10
+        },
+        {
+          "id": "activity-1786690034943-d3ed44c75c0c7",
+          "name": "Pre Test",
+          "maxScore": 10
+        }
+      ]
+    },
+    {
+      "id": "class-1784677753367-f6e8433573e49",
+      "name": "clase 1",
+      "code": "PARALELO 2",
+      "term": "I PAO 2026",
+      "color": "#00695c",
+      "activities": [
+        {
+          "id": "activity-1784677763394-26cb2ed3ee295",
+          "name": "pg",
+          "maxScore": 5
+        },
+        {
+          "id": "activity-1784677770197-143ab16ce88bd8",
+          "name": "pg2",
+          "maxScore": 8
+        }
+      ]
+    },
+    {
+      "id": "class-1784677827463-c287f045c7f34",
+      "name": "clas 2",
+      "code": "PARALELO 3",
+      "term": "I PAO 2026",
+      "color": "#0277bd",
+      "activities": []
+    },
+    {
+      "id": "class-1786687209782-220c116bb93e28",
+      "name": "Clase de Prueba",
+      "code": "PARALELO 4",
+      "term": "I PAO 2026",
+      "color": "#2e7d32",
+      "activities": []
+    }
+  ],
+  "students": [
+    {
+      "id": "student-1786687552078-52bd89d8df72d",
+      "name": "Juan Perez"
+    },
+    {
+      "id": "student-1786687600076-5fa7f4203da06",
+      "name": "Ana Gomez"
+    },
+    {
+      "id": "student-1786687600076-1f5b11983f0cd",
+      "name": "Luis Martinez"
+    },
+    {
+      "id": "student-1786687600076-efd22520ab4ea8",
+      "name": "Maria Rodriguez"
+    }
+  ],
+  "grades": {
+    "student-1786687552078-52bd89d8df72d:activity-1786687811261-dde20ee1662f8": 9,
+    "student-1786687600076-5fa7f4203da06:activity-1786687811261-dde20ee1662f8": 8,
+    "student-1786687600076-efd22520ab4ea8:activity-1786687811261-dde20ee1662f8": 6,
+    "student-1786687600076-1f5b11983f0cd:activity-1786687811261-dde20ee1662f8": 7,
+    "student-1786687552078-52bd89d8df72d:activity-1786688165494-7d60cd5925bb": 8,
+    "student-1786687600076-1f5b11983f0cd:activity-1786688165494-7d60cd5925bb": 6,
+    "student-1786687600076-5fa7f4203da06:activity-1786688165494-7d60cd5925bb": 7,
+    "student-1786687600076-efd22520ab4ea8:activity-1786688165494-7d60cd5925bb": 5,
+    "student-1786687552078-52bd89d8df72d:activity-1786688609464-5eb44415431c78": 4,
+    "student-1786687600076-5fa7f4203da06:activity-1786688609464-5eb44415431c78": 5,
+    "student-1786687600076-1f5b11983f0cd:activity-1786688609464-5eb44415431c78": 6,
+    "student-1786687600076-efd22520ab4ea8:activity-1786688609464-5eb44415431c78": 7,
+    "student-1786687552078-52bd89d8df72d:activity-1786688668978-31465aa67bfcd": 8,
+    "student-1786687600076-5fa7f4203da06:activity-1786688668978-31465aa67bfcd": 8,
+    "student-1786687600076-1f5b11983f0cd:activity-1786688668978-31465aa67bfcd": 9,
+    "student-1786687600076-efd22520ab4ea8:activity-1786688668978-31465aa67bfcd": 9,
+    "student-1786687552078-52bd89d8df72d:activity-1786690034943-d3ed44c75c0c7": 4,
+    "student-1786687600076-1f5b11983f0cd:activity-1786690034943-d3ed44c75c0c7": 6
+  },
+  "diagnosticTests": {
+    "maxScore": 10,
+    "scores": {}
+  }
+}

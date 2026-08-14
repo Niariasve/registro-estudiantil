@@ -1,10 +1,16 @@
 {
-  "name": "registro-estudiantil",
+  "name": "registro-actividades-estudiantiles",
   "version": "1.0.0",
   "private": true,
-  "description": "Sistema local para registro de actividades estudiantiles.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js"
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.7"
   }
 }

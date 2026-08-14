@@ -1,0 +1,10 @@
+{
+  "framework": null,
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/paginas/index.html",
+      "permanent": false
+    }
+  ]
+}
