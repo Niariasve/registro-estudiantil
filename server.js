@@ -235,7 +235,10 @@ async function serveStatic(request, response) {
   }
 
   const extension = path.extname(filePath);
-  response.writeHead(200, { 'Content-Type': contentTypes[extension] || 'application/octet-stream' });
+  response.writeHead(200, {
+    'Content-Type': contentTypes[extension] || 'application/octet-stream',
+    'Cache-Control': 'no-cache, no-store, must-revalidate'
+  });
   createReadStream(filePath)
     .on('error', () => {
       if (!response.headersSent) response.writeHead(404);
