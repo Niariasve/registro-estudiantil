@@ -198,7 +198,7 @@ const ClassesModule = (() => {
         return `
           <article class="course-card" data-open-class="${classItem.id}">
             <div class="course-card-banner" style="background-color: ${cardColor};">
-              <div class="card-menu-wrapper" onclick="event.stopPropagation();">
+              <div class="card-menu-wrapper">
                 <button class="card-menu-btn" title="Opciones de clase" data-toggle-menu="${classItem.id}">
                   ⋮
                 </button>
