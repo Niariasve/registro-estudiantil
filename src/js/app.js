@@ -93,16 +93,24 @@ const App = (() => {
     });
 
     document.addEventListener('click', (event) => {
-      const menuBtn = event.target.closest('[data-menu-class]');
-      if (menuBtn) {
+      const toggleMenuBtn = event.target.closest('[data-toggle-menu]');
+      if (toggleMenuBtn) {
         event.stopPropagation();
-        const classId = menuBtn.dataset.menuClass;
-        const choice = prompt('Elige una opción:\n1. Modificar clase\n2. Eliminar clase\n(Escribe 1 o 2):');
-        if (choice === '1') {
-          ClassesModule.editClass(classId);
-        } else if (choice === '2') {
-          ClassesModule.deleteClass(classId);
-        }
+        ClassesModule.toggleDropdown(toggleMenuBtn.dataset.toggleMenu);
+        return;
+      }
+
+      const editClassBtn = event.target.closest('[data-edit-class]');
+      if (editClassBtn) {
+        event.stopPropagation();
+        ClassesModule.editClass(editClassBtn.dataset.editClass);
+        return;
+      }
+
+      const deleteClassBtn = event.target.closest('[data-delete-class]');
+      if (deleteClassBtn) {
+        event.stopPropagation();
+        ClassesModule.deleteClass(deleteClassBtn.dataset.deleteClass);
         return;
       }
 
@@ -112,15 +120,11 @@ const App = (() => {
         return;
       }
 
-      const deleteClassBtn = event.target.closest('[data-delete-class]');
-      const editClassBtn = event.target.closest('[data-edit-class]');
       const deleteStudentBtn = event.target.closest('[data-delete-student]');
       const editStudentBtn = event.target.closest('[data-edit-student]');
       const deleteActivityBtn = event.target.closest('[data-delete-activity]');
       const editActivityBtn = event.target.closest('[data-edit-activity]');
 
-      if (editClassBtn) ClassesModule.editClass(editClassBtn.dataset.editClass);
-      if (deleteClassBtn) ClassesModule.deleteClass(deleteClassBtn.dataset.deleteClass);
       if (editStudentBtn) StudentsModule.editStudent(editStudentBtn.dataset.editStudent);
       if (deleteStudentBtn) StudentsModule.deleteStudent(deleteStudentBtn.dataset.deleteStudent);
       if (editActivityBtn) ClassDetailModule.editActivity(editActivityBtn.dataset.editActivity);

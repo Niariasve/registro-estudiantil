@@ -79,9 +79,12 @@
             <div id="modalColorSwatches" class="color-picker-grid"></div>
           </label>
         </div>
-        <div class="modal-footer">
-          <button id="cancelClassModalBtn" class="btn btn-secondary">Cancelar</button>
-          <button id="saveClassModalBtn" class="btn btn-primary">Guardar clase</button>
+        <div class="modal-footer" style="display: flex; justify-content: space-between;">
+          <button id="deleteClassModalBtn" class="btn btn-danger" style="display: none;">Eliminar clase</button>
+          <div style="display: flex; gap: 8px; margin-left: auto;">
+            <button id="cancelClassModalBtn" class="btn btn-secondary">Cancelar</button>
+            <button id="saveClassModalBtn" class="btn btn-primary">Guardar clase</button>
+          </div>
         </div>
       </div>
     </div>
