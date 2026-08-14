@@ -296,14 +296,52 @@ const ClassDetailModule = (() => {
     );
   }
 
+  async function deleteCurrentClass() {
+    const currentClass = AppStorage.selectedClass();
+    if (!currentClass) return;
+    if (
+      !confirm(
+        `¿Eliminar la clase "${currentClass.name}"? También se eliminarán sus actividades y notas asociadas.`
+      )
+    ) {
+      return;
+    }
+
+    const data = AppStorage.getData();
+    const classId = currentClass.id;
+    const previousData = AppStorage.snapshot();
+    const activityIds = new Set(
+      currentClass.activities.map((activity) => activity.id)
+    );
+
+    Object.keys(data.grades).forEach((key) => {
+      const activityId = key.slice(key.indexOf(':') + 1);
+      if (activityIds.has(activityId)) delete data.grades[key];
+    });
+
+    data.classes = data.classes.filter((item) => item.id !== classId);
+    data.selectedClassId = data.classes[0]?.id ?? null;
+
+    try {
+      await AppStorage.persistNow();
+      window.location.href = '/paginas/index.html';
+    } catch (error) {
+      AppStorage.replaceData(previousData);
+      console.error(error);
+      alert(error.message || 'No se pudo eliminar la clase.');
+    }
+  }
+
   function bindEvents() {
-    byId('addActivity').addEventListener('click', addActivity);
-    byId('exportCsv').addEventListener('click', exportCsv);
+    byId('addActivity')?.addEventListener('click', addActivity);
+    byId('exportCsv')?.addEventListener('click', exportCsv);
+    byId('deleteCurrentClassBtn')?.addEventListener('click', deleteCurrentClass);
   }
 
   return {
     bindEvents,
     deleteActivity,
+    deleteCurrentClass,
     editActivity,
     renderClassDetail,
     updateGrade
