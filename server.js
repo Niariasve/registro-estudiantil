@@ -43,7 +43,8 @@ const contentTypes = {
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
-  '.svg': 'image/svg+xml'
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon'
 };
 
 function normalizeData(value) {
@@ -147,12 +148,13 @@ function sendJson(response, statusCode, payload) {
 }
 
 async function handleApi(request, response) {
-  if (request.url === '/api/data' && request.method === 'GET') {
+  const parsed = new URL(request.url, 'http://localhost');
+  if (parsed.pathname === '/api/data' && request.method === 'GET') {
     sendJson(response, 200, await readDatabase());
     return true;
   }
 
-  if (request.url === '/api/data' && request.method === 'PUT') {
+  if (parsed.pathname === '/api/data' && request.method === 'PUT') {
     const body = await readRequestBody(request);
     const data = JSON.parse(body || '{}');
     await writeDatabase(data);
@@ -164,29 +166,50 @@ async function handleApi(request, response) {
 }
 
 function safeStaticPath(url) {
-  const requestPath = new URL(url, 'http://localhost').pathname;
-  if (requestPath === '/' || requestPath === '/index.html' || requestPath === '/tablero') {
+  const parsed = new URL(url, 'http://localhost');
+  let pathname = parsed.pathname;
+
+  // Clean duplicate subpaths
+  while (pathname.includes('/paginas/paginas')) {
+    pathname = pathname.replace('/paginas/paginas', '/paginas');
+  }
+
+  // Common aliases for Tablero / Home
+  if (pathname === '/' || pathname === '/index.html' || pathname === '/tablero' || pathname === '/paginas/index.html' || pathname === '/paginas/' || pathname === '/paginas') {
     return path.join(PUBLIC_DIR, 'paginas', 'index.html');
   }
-  if (requestPath === '/estudiantes' || requestPath === '/estudiantes.html') {
+
+  // Common aliases for Estudiantes
+  if (pathname === '/estudiantes' || pathname === '/estudiantes.html' || pathname === '/paginas/estudiantes.html' || pathname === '/paginas/estudiantes') {
     return path.join(PUBLIC_DIR, 'paginas', 'estudiantes.html');
   }
-  if (requestPath === '/dashboard' || requestPath === '/dashboard.html') {
+
+  // Common aliases for Dashboard
+  if (pathname === '/dashboard' || pathname === '/dashboard.html' || pathname === '/paginas/dashboard.html' || pathname === '/paginas/dashboard') {
     return path.join(PUBLIC_DIR, 'paginas', 'dashboard.html');
   }
-  if (requestPath === '/clase' || requestPath === '/clase.html') {
+
+  // Common aliases for Clase
+  if (pathname === '/clase' || pathname === '/clase.html' || pathname === '/paginas/clase.html' || pathname === '/paginas/clase') {
     return path.join(PUBLIC_DIR, 'paginas', 'clase.html');
   }
-  const relativePath = requestPath.slice(1);
-  const filePath = path.normalize(path.join(PUBLIC_DIR, relativePath));
-  return filePath.startsWith(PUBLIC_DIR) ? filePath : null;
+
+  // Direct file requests
+  const cleanPath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+  const filePath = path.normalize(path.join(PUBLIC_DIR, cleanPath));
+
+  if (filePath.startsWith(PUBLIC_DIR)) {
+    return filePath;
+  }
+
+  return null;
 }
 
 async function serveStatic(request, response) {
   const filePath = safeStaticPath(request.url);
   if (!filePath) {
-    response.writeHead(403);
-    response.end('Ruta no permitida');
+    response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    response.end('Archivo no encontrado');
     return;
   }
 
@@ -194,6 +217,18 @@ async function serveStatic(request, response) {
     const fileStats = await stat(filePath);
     if (!fileStats.isFile()) throw new Error('No es un archivo');
   } catch {
+    // If not found in root, try looking in paginas
+    try {
+      const fallbackPath = path.join(PUBLIC_DIR, 'paginas', path.basename(filePath));
+      const fbStats = await stat(fallbackPath);
+      if (fbStats.isFile()) {
+        const ext = path.extname(fallbackPath);
+        response.writeHead(200, { 'Content-Type': contentTypes[ext] || 'application/octet-stream' });
+        createReadStream(fallbackPath).pipe(response);
+        return;
+      }
+    } catch {}
+
     response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
     response.end('Archivo no encontrado');
     return;
