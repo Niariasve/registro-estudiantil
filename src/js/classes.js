@@ -18,12 +18,14 @@ const ClassesModule = (() => {
   }
 
   function openClassModal(classIdToEdit = null) {
+    closeAllDropdowns();
     const modal = byId('classModal');
     const titleEl = byId('classModalTitle');
     const nameInput = byId('modalClassName');
     const codeInput = byId('modalClassCode');
     const termInput = byId('modalClassTerm');
     const idInput = byId('modalClassId');
+    const deleteBtn = byId('deleteClassModalBtn');
     const swatchesContainer = byId('modalColorSwatches');
 
     if (classIdToEdit) {
@@ -35,6 +37,7 @@ const ClassesModule = (() => {
       codeInput.value = classItem.code || '';
       termInput.value = classItem.term || 'I PAO 2026';
       selectedColor = classItem.color || colorPalette[0];
+      if (deleteBtn) deleteBtn.style.display = 'inline-block';
     } else {
       titleEl.textContent = 'Nueva clase';
       idInput.value = '';
@@ -42,21 +45,38 @@ const ClassesModule = (() => {
       codeInput.value = '';
       termInput.value = 'I PAO 2026';
       selectedColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+      if (deleteBtn) deleteBtn.style.display = 'none';
     }
 
     // Render swatches
-    swatchesContainer.innerHTML = colorPalette
-      .map(
-        (c) => `<button type="button" class="color-swatch ${c === selectedColor ? 'selected' : ''}" style="background-color: ${c};" data-color="${c}"></button>`
-      )
-      .join('');
+    if (swatchesContainer) {
+      swatchesContainer.innerHTML = colorPalette
+        .map(
+          (c) => `<button type="button" class="color-swatch ${c === selectedColor ? 'selected' : ''}" style="background-color: ${c};" data-color="${c}"></button>`
+        )
+        .join('');
+    }
 
-    modal.classList.add('open');
-    nameInput.focus();
+    modal?.classList.add('open');
+    nameInput?.focus();
   }
 
   function closeClassModal() {
     byId('classModal')?.classList.remove('open');
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.card-dropdown-menu').forEach((el) => {
+      el.hidden = true;
+    });
+  }
+
+  function toggleDropdown(classId) {
+    const menu = byId(`menu-${classId}`);
+    if (!menu) return;
+    const isHidden = menu.hidden;
+    closeAllDropdowns();
+    menu.hidden = !isHidden;
   }
 
   async function saveClassFromModal() {
@@ -108,6 +128,7 @@ const ClassesModule = (() => {
   }
 
   async function deleteClass(classId) {
+    closeAllDropdowns();
     const data = AppStorage.getData();
     const classItem = data.classes.find((item) => item.id === classId);
 
@@ -138,6 +159,7 @@ const ClassesModule = (() => {
 
     try {
       await AppStorage.persistNow();
+      closeClassModal();
       App.render();
     } catch (error) {
       AppStorage.replaceData(previousData);
@@ -176,9 +198,15 @@ const ClassesModule = (() => {
         return `
           <article class="course-card" data-open-class="${classItem.id}">
             <div class="course-card-banner" style="background-color: ${cardColor};">
-              <button class="card-menu-btn" title="Opciones de clase" data-menu-class="${classItem.id}" onclick="event.stopPropagation();">
-                ⋮
-              </button>
+              <div class="card-menu-wrapper" onclick="event.stopPropagation();">
+                <button class="card-menu-btn" title="Opciones de clase" data-toggle-menu="${classItem.id}">
+                  ⋮
+                </button>
+                <div class="card-dropdown-menu" id="menu-${classItem.id}" hidden>
+                  <button type="button" class="dropdown-item" data-edit-class="${classItem.id}">Editar clase</button>
+                  <button type="button" class="dropdown-item text-danger" data-delete-class="${classItem.id}">Eliminar clase</button>
+                </div>
+              </div>
             </div>
             <div class="course-card-content">
               <h3 class="course-title" title="${escapeHtml(classItem.name)}">${escapeHtml(classItem.name)}</h3>
@@ -203,6 +231,11 @@ const ClassesModule = (() => {
     byId('cancelClassModalBtn')?.addEventListener('click', closeClassModal);
     byId('saveClassModalBtn')?.addEventListener('click', saveClassFromModal);
 
+    byId('deleteClassModalBtn')?.addEventListener('click', () => {
+      const id = byId('modalClassId')?.value;
+      if (id) deleteClass(id);
+    });
+
     byId('modalColorSwatches')?.addEventListener('click', (e) => {
       const swatch = e.target.closest('[data-color]');
       if (!swatch) return;
@@ -216,13 +249,22 @@ const ClassesModule = (() => {
     byId('classModal')?.addEventListener('click', (e) => {
       if (e.target === byId('classModal')) closeClassModal();
     });
+
+    // Close dropdowns on clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.card-menu-wrapper')) {
+        closeAllDropdowns();
+      }
+    });
   }
 
   return {
     bindEvents,
+    closeAllDropdowns,
     deleteClass,
     editClass: openClassModal,
     openClassModal,
-    renderClassesList
+    renderClassesList,
+    toggleDropdown
   };
 })();
