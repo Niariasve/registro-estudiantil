@@ -34,25 +34,6 @@
           "maxScore": 10
         }
       ]
-    },
-    {
-      "id": "class-1784677753367-f6e8433573e49",
-      "name": "clase 1",
-      "code": "PARALELO 2",
-      "term": "I PAO 2026",
-      "color": "#00695c",
-      "activities": [
-        {
-          "id": "activity-1784677763394-26cb2ed3ee295",
-          "name": "pg",
-          "maxScore": 5
-        },
-        {
-          "id": "activity-1784677770197-143ab16ce88bd8",
-          "name": "pg2",
-          "maxScore": 8
-        }
-      ]
     }
   ],
   "students": [
