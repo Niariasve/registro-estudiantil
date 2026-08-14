@@ -1,16 +1,27 @@
 import { createClient } from '@supabase/supabase-js';
 
+const defaultColors = [
+  '#2e7d32', '#00695c', '#0277bd', '#283593', '#6a1b9a', '#ad1457', '#d84315', '#4e342e', '#37474f'
+];
+
 const defaultData = {
   selectedClassId: 'class-1',
   classes: [
     {
       id: 'class-1',
       name: 'Clase 1',
+      code: 'PARALELO 1',
+      term: 'I PAO 2026',
+      color: '#2e7d32',
       activities: []
     }
   ],
   students: [],
-  grades: {}
+  grades: {},
+  diagnosticTests: {
+    maxScore: 10,
+    scores: {}
+  }
 };
 
 let supabaseClient = null;
@@ -81,6 +92,21 @@ function normalizeData(value) {
       name: cleanText(
         classItem?.name,
         `Clase ${classIndex + 1}`
+      ),
+
+      code: cleanText(
+        classItem?.code,
+        `PARALELO ${classIndex + 1}`
+      ),
+
+      term: cleanText(
+        classItem?.term,
+        'I PAO 2026'
+      ),
+
+      color: cleanText(
+        classItem?.color,
+        defaultColors[classIndex % defaultColors.length]
       ),
 
       activities: Array.isArray(
@@ -196,11 +222,35 @@ function normalizeData(value) {
     }
   );
 
+  const rawDiag = input.diagnosticTests && typeof input.diagnosticTests === 'object' ? input.diagnosticTests : {};
+  const diagMax = Number(rawDiag.maxScore);
+  const validDiagMax = Number.isFinite(diagMax) && diagMax > 0 ? diagMax : 10;
+  const diagScores = {};
+
+  if (rawDiag.scores && typeof rawDiag.scores === 'object') {
+    Object.entries(rawDiag.scores).forEach(([studentId, item]) => {
+      if (!studentIds.has(studentId)) return;
+      if (!item || typeof item !== 'object') return;
+
+      const pre = item.pre !== undefined && item.pre !== null && item.pre !== '' ? Number(item.pre) : null;
+      const post = item.post !== undefined && item.post !== null && item.post !== '' ? Number(item.post) : null;
+
+      diagScores[studentId] = {
+        pre: Number.isFinite(pre) && pre >= 0 ? Math.min(pre, validDiagMax) : null,
+        post: Number.isFinite(post) && post >= 0 ? Math.min(post, validDiagMax) : null
+      };
+    });
+  }
+
   return {
     selectedClassId,
     classes,
     students,
-    grades
+    grades,
+    diagnosticTests: {
+      maxScore: validDiagMax,
+      scores: diagScores
+    }
   };
 }
 

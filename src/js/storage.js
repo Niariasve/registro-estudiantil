@@ -1,11 +1,28 @@
 const AppStorage = (() => {
   const API_URL = '/api/data';
 
+  const defaultColors = [
+    '#2e7d32', '#00695c', '#0277bd', '#283593', '#6a1b9a', '#ad1457', '#d84315', '#4e342e', '#37474f'
+  ];
+
   const defaultData = {
     selectedClassId: 'class-1',
-    classes: [{ id: 'class-1', name: 'Clase 1', activities: [] }],
+    classes: [
+      {
+        id: 'class-1',
+        name: 'Clase 1',
+        code: 'PARALELO 1',
+        term: 'I PAO 2026',
+        color: '#2e7d32',
+        activities: []
+      }
+    ],
     students: [],
-    grades: {}
+    grades: {},
+    diagnosticTests: {
+      maxScore: 10,
+      scores: {}
+    }
   };
 
   let data = clone(defaultData);
@@ -45,34 +62,85 @@ const AppStorage = (() => {
     }
   }
 
+  function cleanText(value, fallback) {
+    const text = String(value ?? '').trim();
+    return text || fallback;
+  }
+
   function normalizeData(value) {
     const input = value && typeof value === 'object' ? value : {};
 
-    const normalized = {
-      selectedClassId: input.selectedClassId ?? null,
-      classes: Array.isArray(input.classes)
-        ? input.classes
-        : clone(defaultData).classes,
-      students: Array.isArray(input.students) ? input.students : [],
-      grades:
-        input.grades && typeof input.grades === 'object' && !Array.isArray(input.grades)
-          ? input.grades
-          : {}
-    };
+    const classesSource = Array.isArray(input.classes)
+      ? input.classes
+      : clone(defaultData).classes;
 
-    normalized.classes.forEach((classItem) => {
-      if (!Array.isArray(classItem.activities)) classItem.activities = [];
-    });
+    const classes = classesSource.map((classItem, index) => ({
+      id: cleanText(classItem?.id, `class-${index + 1}`),
+      name: cleanText(classItem?.name, `Clase ${index + 1}`),
+      code: cleanText(classItem?.code, `PARALELO ${index + 1}`),
+      term: cleanText(classItem?.term, 'I PAO 2026'),
+      color: cleanText(classItem?.color, defaultColors[index % defaultColors.length]),
+      activities: Array.isArray(classItem?.activities)
+        ? classItem.activities.map((act, actIndex) => {
+            const maxScore = Number(act?.maxScore);
+            return {
+              id: cleanText(act?.id, `activity-${index + 1}-${actIndex + 1}`),
+              name: cleanText(act?.name, `Actividad ${actIndex + 1}`),
+              maxScore: Number.isFinite(maxScore) && maxScore >= 0 ? maxScore : 0
+            };
+          })
+        : []
+    }));
 
-    const selectedExists = normalized.classes.some(
-      (classItem) => classItem.id === normalized.selectedClassId
-    );
+    const students = Array.isArray(input.students)
+      ? input.students.map((student, index) => ({
+          id: cleanText(student?.id, `student-${index + 1}`),
+          name: cleanText(student?.name, `Estudiante ${index + 1}`)
+        }))
+      : [];
 
-    if (!selectedExists) {
-      normalized.selectedClassId = normalized.classes[0]?.id ?? null;
+    const studentIds = new Set(students.map((s) => s.id));
+
+    const selectedClassId = classes.some((item) => item.id === input.selectedClassId)
+      ? input.selectedClassId
+      : classes[0]?.id ?? null;
+
+    const grades = input.grades && typeof input.grades === 'object' && !Array.isArray(input.grades)
+      ? { ...input.grades }
+      : {};
+
+    const rawDiag = input.diagnosticTests && typeof input.diagnosticTests === 'object'
+      ? input.diagnosticTests
+      : {};
+    const diagMax = Number(rawDiag.maxScore);
+    const validDiagMax = Number.isFinite(diagMax) && diagMax > 0 ? diagMax : 10;
+    const diagScores = {};
+
+    if (rawDiag.scores && typeof rawDiag.scores === 'object') {
+      Object.entries(rawDiag.scores).forEach(([studentId, item]) => {
+        if (!studentIds.has(studentId)) return;
+        if (!item || typeof item !== 'object') return;
+
+        const pre = item.pre !== undefined && item.pre !== null && item.pre !== '' ? Number(item.pre) : null;
+        const post = item.post !== undefined && item.post !== null && item.post !== '' ? Number(item.post) : null;
+
+        diagScores[studentId] = {
+          pre: Number.isFinite(pre) && pre >= 0 ? Math.min(pre, validDiagMax) : null,
+          post: Number.isFinite(post) && post >= 0 ? Math.min(post, validDiagMax) : null
+        };
+      });
     }
 
-    return normalized;
+    return {
+      selectedClassId,
+      classes,
+      students,
+      grades,
+      diagnosticTests: {
+        maxScore: validDiagMax,
+        scores: diagScores
+      }
+    };
   }
 
   function persistNow() {

@@ -116,8 +116,32 @@ const ClassDetailModule = (() => {
       return;
     }
 
-    byId('classTitle').textContent = currentClass.name;
-    byId('classSubtitle').textContent = `${AppStorage.getData().students.length} estudiantes · ${currentClass.activities.length} actividades`;
+    const titleEl = byId('classTitle');
+    const subtitleEl = byId('classSubtitle');
+    const bannerEl = byId('classHeaderBanner');
+
+    if (titleEl) titleEl.textContent = currentClass.name;
+    if (subtitleEl) {
+      subtitleEl.textContent = `${currentClass.code || 'PARALELO 1'} · ${currentClass.term || 'I PAO 2026'}`;
+    }
+    if (bannerEl) {
+      bannerEl.style.backgroundColor = currentClass.color || '#2e7d32';
+    }
+
+    const totalPossible = currentClass.activities.reduce(
+      (sum, a) => sum + (Number(a.maxScore) || 0),
+      0
+    );
+
+    const activitiesCountBadge = byId('classActivitiesBadge');
+    if (activitiesCountBadge) activitiesCountBadge.textContent = `${currentClass.activities.length} actividades`;
+
+    const maxScoreBadge = byId('classMaxScoreBadge');
+    if (maxScoreBadge) maxScoreBadge.textContent = `Puntaje máx: ${formatScore(totalPossible)} pts`;
+
+    const studentsCountBadge = byId('classStudentsBadge');
+    if (studentsCountBadge) studentsCountBadge.textContent = `${AppStorage.getData().students.length} estudiantes`;
+
     renderActivitiesInfo(currentClass);
     renderGradesTable(currentClass);
   }

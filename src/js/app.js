@@ -6,29 +6,38 @@ const App = (() => {
   }
 
   function showHome() {
-    window.location.href = 'index.html';
+    window.location.href = '/paginas/index.html';
+  }
+
+  function showStudents() {
+    window.location.href = '/paginas/estudiantes.html';
   }
 
   function showDashboard() {
-    window.location.href = 'dashboard.html';
+    window.location.href = '/paginas/dashboard.html';
   }
 
   function showClass(classId) {
     AppStorage.setSelectedClass(classId);
-    window.location.href = `clase.html?id=${encodeURIComponent(classId)}`;
+    window.location.href = `/paginas/clase.html?id=${encodeURIComponent(classId)}`;
   }
 
   function render() {
-    if (currentPage() === 'home') {
-      StudentsModule.renderStudentsList();
+    const page = currentPage();
+
+    if (page === 'home') {
       ClassesModule.renderClassesList();
     }
 
-    if (currentPage() === 'class-detail') {
+    if (page === 'students') {
+      StudentsModule.renderStudentsList();
+    }
+
+    if (page === 'class-detail') {
       ClassDetailModule.renderClassDetail();
     }
 
-    if (currentPage() === 'dashboard') {
+    if (page === 'dashboard') {
       DashboardModule.renderDashboard();
     }
   }
@@ -58,20 +67,22 @@ const App = (() => {
   }
 
   function bindEvents() {
-    if (currentPage() === 'home') {
-      StudentsModule.bindEvents();
+    const page = currentPage();
+
+    if (page === 'home') {
       ClassesModule.bindEvents();
+    }
+
+    if (page === 'students') {
+      StudentsModule.bindEvents();
       BackupModule.bindEvents();
     }
 
-    if (currentPage() === 'class-detail') {
-      byId('backToHome')?.addEventListener('click', showHome);
-      byId('goToDashboard')?.addEventListener('click', showDashboard);
+    if (page === 'class-detail') {
       ClassDetailModule.bindEvents();
     }
 
-    if (currentPage() === 'dashboard') {
-      byId('backToHome')?.addEventListener('click', showHome);
+    if (page === 'dashboard') {
       DashboardModule.bindEvents();
     }
 
@@ -82,27 +93,45 @@ const App = (() => {
     });
 
     document.addEventListener('click', (event) => {
-      const openClassId = event.target.dataset.openClass;
-      const deleteClassId = event.target.dataset.deleteClass;
-      const editClassId = event.target.dataset.editClass;
-      const deleteStudentId = event.target.dataset.deleteStudent;
-      const editStudentId = event.target.dataset.editStudent;
-      const deleteActivityId = event.target.dataset.deleteActivity;
-      const editActivityId = event.target.dataset.editActivity;
+      const menuBtn = event.target.closest('[data-menu-class]');
+      if (menuBtn) {
+        event.stopPropagation();
+        const classId = menuBtn.dataset.menuClass;
+        const choice = prompt('Elige una opción:\n1. Modificar clase\n2. Eliminar clase\n(Escribe 1 o 2):');
+        if (choice === '1') {
+          ClassesModule.editClass(classId);
+        } else if (choice === '2') {
+          ClassesModule.deleteClass(classId);
+        }
+        return;
+      }
 
-      if (openClassId) showClass(openClassId);
-      if (editClassId) ClassesModule.editClass(editClassId);
-      if (deleteClassId) ClassesModule.deleteClass(deleteClassId);
-      if (editStudentId) StudentsModule.editStudent(editStudentId);
-      if (deleteStudentId) StudentsModule.deleteStudent(deleteStudentId);
-      if (editActivityId) ClassDetailModule.editActivity(editActivityId);
-      if (deleteActivityId) ClassDetailModule.deleteActivity(deleteActivityId);
+      const openCard = event.target.closest('[data-open-class]');
+      if (openCard) {
+        showClass(openCard.dataset.openClass);
+        return;
+      }
+
+      const deleteClassBtn = event.target.closest('[data-delete-class]');
+      const editClassBtn = event.target.closest('[data-edit-class]');
+      const deleteStudentBtn = event.target.closest('[data-delete-student]');
+      const editStudentBtn = event.target.closest('[data-edit-student]');
+      const deleteActivityBtn = event.target.closest('[data-delete-activity]');
+      const editActivityBtn = event.target.closest('[data-edit-activity]');
+
+      if (editClassBtn) ClassesModule.editClass(editClassBtn.dataset.editClass);
+      if (deleteClassBtn) ClassesModule.deleteClass(deleteClassBtn.dataset.deleteClass);
+      if (editStudentBtn) StudentsModule.editStudent(editStudentBtn.dataset.editStudent);
+      if (deleteStudentBtn) StudentsModule.deleteStudent(deleteStudentBtn.dataset.deleteStudent);
+      if (editActivityBtn) ClassDetailModule.editActivity(editActivityBtn.dataset.editActivity);
+      if (deleteActivityBtn) ClassDetailModule.deleteActivity(deleteActivityBtn.dataset.deleteActivity);
     });
   }
 
-  return { init, render, showClass, showDashboard, showHome };
+  return { init, render, showClass, showDashboard, showHome, showStudents };
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
 });
+

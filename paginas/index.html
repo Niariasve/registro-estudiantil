@@ -3,70 +3,88 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Registro de Actividades Estudiantiles</title>
+    <title>Tablero - Registro de Actividades Estudiantiles</title>
+    <link rel="stylesheet" href="../src/css/layout.css" />
     <link rel="stylesheet" href="../src/css/styles.css" />
   </head>
   <body data-page="home">
-    <header>
-      <h1>Registro de Actividades Estudiantiles</h1>
-      <p>Sistema de registro de clases y actividades estudiantiles.</p>
-    </header>
-
-    <main>
-      <section>
-        <div class="row table-header">
-          <h2>Clases registradas</h2>
-          <a class="button secondary" href="dashboard.html">Ver dashboard</a>
-        </div>
-
-        <div class="row">
-          <label>
-            Nueva clase
-            <input id="className" placeholder="Ej: Clase 1" />
-          </label>
-          <button id="addClass">Agregar clase</button>
-        </div>
-
-        <p class="muted">Entra a cada clase para registrar sus actividades y puntajes.</p>
-        <div id="classesList" class="cards-list"></div>
-      </section>
-
-      <section>
-        <h2>Estudiantes registrados</h2>
-        <div class="grid">
-          <label>
-            Agregar estudiante
-            <input id="studentName" placeholder="Nombres y apellidos" />
-          </label>
-          <div class="row">
-            <button id="addStudent">Agregar estudiante</button>
+    <div class="app-layout">
+      <!-- Sidebar Navigation -->
+      <aside class="app-sidebar">
+        <div class="sidebar-header">
+          <div class="brand-icon">RD</div>
+          <div>
+            <h1 class="brand-title">Registro Docente</h1>
+            <p class="brand-subtitle">Gestión Estudiantil</p>
           </div>
         </div>
-
-        <label class="bulk-students-label">
-          Carga rápida, un estudiante por línea
-          <textarea id="bulkStudents" placeholder="Noelia Burgos Bajaña&#10;Carlos Mateo Flores Burgos"></textarea>
-        </label>
-
-        <div class="toolbar students-actions">
-          <button id="importStudents" class="secondary">Cargar lista</button>
-          <button id="clearStudents" class="danger">Eliminar todos los estudiantes</button>
+        <nav class="sidebar-nav">
+          <a href="/paginas/index.html" class="nav-item active">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Tablero</span>
+          </a>
+          <a href="/paginas/estudiantes.html" class="nav-item">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span>Estudiantes</span>
+          </a>
+          <a href="/paginas/dashboard.html" class="nav-item">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            <span>Dashboard y Tests</span>
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <span>Sistema Académico</span>
+          <span style="opacity: 0.7;">v2.0</span>
         </div>
+      </aside>
 
-        <div id="studentsList" class="section-content"></div>
-      </section>
+      <!-- Main Content Area -->
+      <div class="app-content">
+        <header class="top-bar">
+          <h2 class="top-bar-title">Tablero</h2>
+          <div class="top-bar-actions">
+            <button id="openAddClassBtn" class="btn btn-primary">+ Nueva clase</button>
+          </div>
+        </header>
 
-      <section>
-        <h2>Respaldo</h2>
-        <div class="toolbar">
-          <button id="exportBackup" class="secondary">Exportar respaldo</button>
-          <label class="backup-import-label">
-            Importar respaldo
-            <input id="importBackup" type="file" accept="application/json" hidden />
+        <main class="main-body">
+          <div id="classesList" class="course-grid"></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal Nueva / Editar Clase -->
+    <div id="classModal" class="modal-backdrop">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="classModalTitle" class="modal-title">Nueva clase</h3>
+          <button id="closeClassModalBtn" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="modalClassId" />
+          <label>
+            Nombre de la materia / clase
+            <input id="modalClassName" placeholder="Ej: DISEÑO DE EXPERIENCIA" />
+          </label>
+          <label>
+            Paralelo o código de curso
+            <input id="modalClassCode" placeholder="Ej: Paralelo 1 · DIGG2024" />
+          </label>
+          <label>
+            Término o semestre
+            <input id="modalClassTerm" placeholder="Ej: I PAO 2026" />
+          </label>
+          <label>
+            Color de la tarjeta
+            <div id="modalColorSwatches" class="color-picker-grid"></div>
           </label>
         </div>
-      </section>
-    </main>
+        <div class="modal-footer">
+          <button id="cancelClassModalBtn" class="btn btn-secondary">Cancelar</button>
+          <button id="saveClassModalBtn" class="btn btn-primary">Guardar clase</button>
+        </div>
+      </div>
+    </div>
 
     <script src="../src/js/utils.js"></script>
     <script src="../src/js/storage.js"></script>
@@ -74,6 +92,7 @@
     <script src="../src/js/classes.js"></script>
     <script src="../src/js/class-detail.js"></script>
     <script src="../src/js/backup.js"></script>
+    <script src="../src/js/dashboard.js"></script>
     <script src="../src/js/app.js"></script>
   </body>
 </html>
