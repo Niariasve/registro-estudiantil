@@ -11,6 +11,7 @@
     "dev": "node server.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.110.7"
+    "@supabase/supabase-js": "^2.110.7",
+    "xlsx": "^0.18.5"
   }
 }
