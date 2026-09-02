@@ -95,7 +95,10 @@ const AppStorage = (() => {
     const students = Array.isArray(input.students)
       ? input.students.map((student, index) => ({
           id: cleanText(student?.id, `student-${index + 1}`),
-          name: cleanText(student?.name, `Estudiante ${index + 1}`)
+          num: student?.num ? Number(student.num) : (index + 1),
+          name: cleanText(student?.name, `Estudiante ${index + 1}`),
+          cedula: cleanText(student?.cedula, ''),
+          email: cleanText(student?.email, '')
         }))
       : [];
 
@@ -126,7 +129,11 @@ const AppStorage = (() => {
 
         diagScores[studentId] = {
           pre: Number.isFinite(pre) && pre >= 0 ? Math.min(pre, validDiagMax) : null,
-          post: Number.isFinite(post) && post >= 0 ? Math.min(post, validDiagMax) : null
+          post: Number.isFinite(post) && post >= 0 ? Math.min(post, validDiagMax) : null,
+          preAnswers: item.preAnswers && typeof item.preAnswers === 'object' ? item.preAnswers : {},
+          postAnswers: item.postAnswers && typeof item.postAnswers === 'object' ? item.postAnswers : {},
+          prePerception: item.prePerception && typeof item.prePerception === 'object' ? item.prePerception : {},
+          postPerception: item.postPerception && typeof item.postPerception === 'object' ? item.postPerception : {}
         };
       });
     }
@@ -138,6 +145,7 @@ const AppStorage = (() => {
       grades,
       diagnosticTests: {
         maxScore: validDiagMax,
+        courseInfo: rawDiag.courseInfo && typeof rawDiag.courseInfo === 'object' ? rawDiag.courseInfo : null,
         scores: diagScores
       }
     };

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte de Resultados de la Capacitación - Paralelo B</title>
+  <link rel="stylesheet" href="../src/css/report.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body class="report-body">
+
+  <!-- Action Toolbar (Hidden during print) -->
+  <header class="report-toolbar">
+    <div class="report-toolbar-brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      <span>Sistema de Evaluaciones • Informe Oficial</span>
+    </div>
+    <div class="report-toolbar-actions">
+      <a href="dashboard.html" class="btn-report btn-report-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Volver al Dashboard
+      </a>
+      <button id="btnExportCsv" class="btn-report btn-report-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Exportar CSV
+      </button>
+      <button id="btnPrintReport" class="btn-report btn-report-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        Imprimir / Guardar en PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Report Container -->
+  <main class="report-container">
+
+    <!-- Header & Metadata -->
+    <header class="report-header">
+      <div class="report-institution">UNIDAD EDUCATIVA ENRIQUE LÓPEZ LASCANO • CÓDIGO: 09H04773</div>
+      <h1 class="report-title">Reporte de Resultados de la Capacitación</h1>
+      <p style="color: #64748b; font-size: 14px; margin: 0;">Evaluación Comparativa de Pensamiento Computacional (Pre-Test vs. Post-Test)</p>
+      
+      <div class="report-meta-badges">
+        <span class="report-badge highlight">Periodo: 2025 - 2026</span>
+        <span class="report-badge highlight">Paralelo: B</span>
+        <span class="report-badge">Matriculados: <strong id="totalStudentsVal">42</strong> estudiantes</span>
+        <span class="report-badge">Instrumento: 11 Preguntas Cognitivas (10 pts)</span>
+      </div>
+    </header>
+
+    <!-- SECTION: Introducción -->
+    <section class="report-section">
+      <h2 class="report-section-title">Introducción</h2>
+      <p class="report-p">
+        Con el fin de medir el impacto de la capacitación impartida en el área de pensamiento computacional, se aplicó un mismo instrumento de evaluación diagnóstica tanto en la primera sesión (Pre-Test) como en la última sesión (Post-Test). El objetivo fundamental de esta evaluación comparativa fue conocer el conocimiento previo de los estudiantes, diagnosticar las áreas de oportunidad e identificar con precisión el progreso conceptual y procedimental alcanzado tras la finalización de los talleres.
+      </p>
+    </section>
+
+    <!-- SECTION: Resultados Generales -->
+    <section class="report-section">
+      <h2 class="report-section-title">Resultados Generales</h2>
+      <p class="report-p">
+        El análisis general refleja la evolución de las calificaciones alcanzadas entre la evaluación inicial y la final. En la primera instancia (Pre-Test), los 38 estudiantes evaluados alcanzaron una calificación promedio de <strong>6.43 puntos</strong> sobre 10. En contraste, en la evaluación final (Post-Test), los 32 estudiantes evaluados obtuvieron un promedio de <strong>6.53 puntos</strong>, registrando un avance positivo en el rendimiento global del paralelo.
+      </p>
+      <p class="report-p">
+        Al analizar a los <strong>31 estudiantes que rindieron ambas evaluaciones de forma pareada</strong>, el promedio inicial fue de <strong>6.45 puntos</strong> y el final de <strong>6.51 puntos</strong>, ratificando una ganancia de aprendizaje favorable.
+      </p>
+
+      <!-- Metrics Cards -->
+      <div class="report-metrics-grid">
+        <div class="report-metric-card">
+          <div class="label">Evaluados Pre-Test</div>
+          <div class="value" id="preEvaluatedVal">38 (90%)</div>
+          <div class="subtitle">de 42 matriculados</div>
+        </div>
+        <div class="report-metric-card">
+          <div class="label">Evaluados Post-Test</div>
+          <div class="value" id="postEvaluatedVal">32 (76%)</div>
+          <div class="subtitle">de 42 matriculados</div>
+        </div>
+        <div class="report-metric-card">
+          <div class="label">Promedio Inicial</div>
+          <div class="value" style="color: #0284c7;" id="preAverageVal">6.43 / 10</div>
+          <div class="subtitle">Pre-Test</div>
+        </div>
+        <div class="report-metric-card">
+          <div class="label">Promedio Final</div>
+          <div class="value" style="color: #ea580c;" id="postAverageVal">6.53 / 10</div>
+          <div class="subtitle">Post-Test</div>
+        </div>
+      </div>
+
+      <p class="report-p">
+        Esto indica que, en términos generales, los estudiantes lograron asimilar y consolidar nuevos conceptos durante las sesiones de trabajo. Sin embargo, un análisis detallado por componente muestra un comportamiento mixto: mientras que en temas como <strong>Hardware (P5)</strong>, <strong>Secuencias algorítmicas (P8)</strong> y <strong>Creación de algoritmos paso a paso (P12)</strong> hubo avances muy significativos, en temas de <strong>Bucles y orientación espacial (P14)</strong> y <strong>Abstracción (P7)</strong> se evidenciaron retrocesos y dudas que señalan áreas pedagógicas prioritarias para futuros refuerzos.
+      </p>
+
+      <!-- Comparative Bar Chart -->
+      <div style="margin: 28px 0; background: #fafafa; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
+        <h3 style="text-align: center; font-size: 16px; margin: 0 0 16px; color: #1e293b;">Gráfico comparativo por pregunta (% de respuestas correctas)</h3>
+        <div style="height: 320px; position: relative;">
+          <canvas id="comparativeBarChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Análisis por Pregunta -->
+    <section class="report-section page-break-before">
+      <h2 class="report-section-title">Análisis por Pregunta</h2>
+      <p class="report-p">
+        El análisis pregunta a pregunta a través de gráficos de pastel permite observar con precisión cómo evolucionó la distribución de respuestas de los estudiantes y el impacto de los contenidos explicados.
+      </p>
+
+      <!-- PREGUNTA 4 -->
+      <article class="question-analysis-card">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 4</span>
+          <h3 class="question-title-text">4. ¿Cuál de las siguientes opciones es un ejemplo de software?</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div class="options-row-grid">
+            <div class="option-box-item"><span></span> A) Monitor</div>
+            <div class="option-box-item"><span>⌨</span> B) Teclado</div>
+            <div class="option-box-item correct-answer"><span> [W]</span> C) Microsoft Word</div>
+            <div class="option-box-item"><span></span> D) Cable de poder</div>
+            <div class="option-box-item"><span></span> E) No sé</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P4 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P4_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P4 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P4_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> En la evaluación inicial, el <strong>39.47%</strong> de los estudiantes identificó correctamente el software, manteniéndose en <strong>37.50%</strong> en la evaluación final. Un porcentaje significativo del grupo seleccionó el Monitor (opción A) o indicó "No sé" (opción E). Esto evidencia que aunque diferencian programas informáticos, se requiere mayor refuerzo para distinguir entre la parte física tangible y los programas lógicos.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 5 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 5</span>
+          <h3 class="question-title-text">5. ¿Cuál de las siguientes opciones es un ejemplo de hardware?</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div class="options-row-grid">
+            <div class="option-box-item"><span> [W]</span> A) Microsoft Word</div>
+            <div class="option-box-item"><span></span> B) Internet</div>
+            <div class="option-box-item correct-answer"><span>⌨</span> C) Teclado</div>
+            <div class="option-box-item"><span></span> D) Archivo pdf</div>
+            <div class="option-box-item"><span></span> E) No sé</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P5 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P5_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P5 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P5_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> Se registró un avance altamente positivo y destacable, pasando del <strong>26.32% de aciertos en la prueba inicial al 50.00% en la prueba final</strong> (+23.68%). En la primera sesión muchos estudiantes confundían hardware con Internet o Word; tras las clases, la mitad del curso identificó de manera certera el teclado como componente físico.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 6 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 6</span>
+          <h3 class="question-title-text">6. ¿Qué tienen en común los objetos de la figura? (Paraguas, Botas, Impermeable)</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div style="font-size: 26px; margin-bottom: 8px;">  </div>
+          <div class="options-row-grid">
+            <div class="option-box-item">A. Se usan cuando hace frío</div>
+            <div class="option-box-item">B. Son para jugar fútbol</div>
+            <div class="option-box-item correct-answer">C. Se usan cuando llueve</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P6 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P6_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P6 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P6_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> El desempeño se mantuvo extraordinariamente alto y sólido, pasando de <strong>89.47% a 87.50%</strong> de aciertos. Los estudiantes del paralelo demostraron un dominio consolidado en la identificación de patrones, características comunes y contextos de uso.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 7 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 7</span>
+          <h3 class="question-title-text">7. Si quisieras dibujar una casa de forma muy simple, ¿cuál dibujo seleccionarías?</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div class="options-row-grid">
+            <div class="option-box-item"><span> (Detallada)</span> A) Casa muy detallada</div>
+            <div class="option-box-item correct-answer"><span> (Esquema simple)</span> B) Casa esquemática simple</div>
+            <div class="option-box-item"><span> (Solo cuadrado)</span> C) Cuadrado</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P7 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P7_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P7 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P7_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> Se observó una ligera disminución, pasando del <strong>55.26% al 46.88%</strong> de aciertos. Muchos niños optaron por la opción A (casa con muchos adornos y detalles), lo que señala la necesidad de reforzar el concepto computacional de <em>abstracción</em>: simplificar la realidad conservando únicamente los elementos esenciales.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 8 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 8</span>
+          <h3 class="question-title-text">8. Selecciona el orden correcto de los pasos para que Bruce Wayne se ponga su traje de Batman.</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div style="font-size: 26px; margin-bottom: 8px;"> </div>
+          <div class="options-row-grid">
+            <div class="option-box-item">A. Cinturón – Capa – Traje</div>
+            <div class="option-box-item correct-answer">B. Traje – Cinturón – Capa</div>
+            <div class="option-box-item">C. Capa – Cinturón – Traje</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P8 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P8_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P8 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P8_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> El resultado fue ampliamente favorable. El porcentaje de estudiantes que secuenció correctamente los pasos subió del <strong>63.16% al 81.25%</strong> (+18.09%). Esto ratifica que los estudiantes comprendieron notablemente la descomposición de procesos y la importancia del orden cronológico.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 9 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 9</span>
+          <h3 class="question-title-text">9. Marca la figura que debe ir en la secuencia / Animal que no sigue el patrón</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div style="font-size: 15px; margin-bottom: 8px;">Secuencia: ⏹   ⏹   &nbsp;|&nbsp; Animales:    </div>
+          <div class="options-row-grid">
+            <div class="option-box-item">A) Rombo / Vaca</div>
+            <div class="option-box-item correct-answer">B) Triángulo / Jirafa</div>
+            <div class="option-box-item">C) Cuadrado / Cebra</div>
+            <div class="option-box-item">D) Panda / Otra opción</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P9 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P9_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P9 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P9_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> En la evaluación inicial el <strong>52.63%</strong> acertó, situándose en <strong>40.63%</strong> en la final. Durante la prueba final a los estudiantes les correspondieron reactivos combinados (algunos con patrones geométricos y otros con discriminación de color en animales), sugiriendo continuar practicando con secuencias de doble atributo.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 10 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 10</span>
+          <h3 class="question-title-text">10. ¿Cuál número crees que va en el espacio vacío para completar la secuencia? 2 → 4 → 6 → 8 → (?) → 12</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div class="options-row-grid">
+            <div class="option-box-item">A. 9</div>
+            <div class="option-box-item correct-answer">B. 10</div>
+            <div class="option-box-item">C. 11</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P10 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P10_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P10 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P10_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> El desempeño se mantuvo en un nivel excelente y con progreso ascendente, subiendo del <strong>84.21% al 87.50%</strong> de aciertos. Esto demuestra un dominio óptimo en la identificación de secuencias aritméticas y conteo de patrones numéricos.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 11 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 11</span>
+          <h3 class="question-title-text">11. Observa los pasos para cepillarte los dientes. Encierra la figura que completa la secuencia.</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div style="font-size: 14px; margin-bottom: 8px;">1. Poner pasta → 2. [  ] → 3. Enjuagarse → 4. Lavar cepillo</div>
+          <div class="options-row-grid">
+            <div class="option-box-item correct-answer">A) Cepillarse los dientes</div>
+            <div class="option-box-item">B) Utilizar hilo dental</div>
+            <div class="option-box-item">C) Utilizar enjuague bucal</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P11 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P11_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P11 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P11_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> El porcentaje se mantuvo sumamente alto y consistente (<strong>89.47% inicial vs. 87.50% final</strong>). Los estudiantes entienden a la perfección la lógica temporal y las relaciones causales en secuencias cotidianas.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 12 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 12</span>
+          <h3 class="question-title-text">12. Indica los pasos para preparar un sánduche de jamón y queso. (Algoritmo propio)</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div style="font-size: 26px; margin-bottom: 8px;"> </div>
+          <div class="options-row-grid">
+            <div class="option-box-item correct-answer">B) Algoritmo correcto (1-Poner pan, 2-Poner jamón/queso, 3-Poner otro pan)</div>
+            <div class="option-box-item">-) Incompleto / No contestó / Desordenado</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P12 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P12_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P12 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P12_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> Avance notable. En la prueba inicial el 68.42% logró describir el algoritmo de forma ordenada, subiendo al <strong>78.13% en la prueba final</strong> (+9.71%). Los estudiantes demostraron una mayor capacidad para expresar y redactar instrucciones exactas sin omitir pasos indispensables.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 13 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 13</span>
+          <h3 class="question-title-text">13. Un niño dice: "Si hace sol, juego afuera. Si llueve, leo un libro." ¿Qué hará el niño si llueve?</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div style="font-size: 26px; margin-bottom: 8px;">  </div>
+          <div class="options-row-grid">
+            <div class="option-box-item">A. Jugar afuera</div>
+            <div class="option-box-item correct-answer">B. Leer un libro</div>
+            <div class="option-box-item">C. Ver TV</div>
+            <div class="option-box-item">D. Dormir</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P13 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P13_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P13 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P13_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> El nivel de aciertos se ubicó en un sólido <strong>73.68% en el inicio y 65.63% en la prueba final</strong>. Aunque la mayoría comprende las estructuras condicionales (If/Else), algunos estudiantes se distrajeron con opciones no contempladas en el enunciado (ver TV o dormir), sugiriendo reforzar la lectura comprensiva de reglas lógicas.
+        </div>
+      </article>
+
+      <!-- PREGUNTA 14 -->
+      <article class="question-analysis-card page-break-before">
+        <div class="question-header">
+          <span class="question-number-tag">Pregunta 14</span>
+          <h3 class="question-title-text">14. ¿Qué figura dibujará la instrucción? "Repetir 4 veces: Caminar 5 pasos hacia adelante, Girar a la derecha"</h3>
+        </div>
+
+        <div class="question-visual-box">
+          <div style="font-size: 26px; margin-bottom: 8px;">   </div>
+          <div class="options-row-grid">
+            <div class="option-box-item">A. Círculo</div>
+            <div class="option-box-item">B. Triángulo</div>
+            <div class="option-box-item correct-answer">C. Cuadrado</div>
+            <div class="option-box-item">D. Línea recta</div>
+            <div class="option-box-item">E. No sé</div>
+          </div>
+        </div>
+
+        <div class="question-pies-container">
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba inicial P14 (Pre-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P14_pre"></canvas></div>
+          </div>
+          <div class="pie-chart-box">
+            <div class="pie-chart-title">Prueba final P14 (Post-Test)</div>
+            <div class="pie-canvas-wrapper"><canvas id="pie_P14_post"></canvas></div>
+          </div>
+        </div>
+
+        <div class="question-text-analysis">
+          <strong>Interpretación de resultados:</strong> El análisis muestra un descenso del 57.89% al <strong>28.13%</strong>. Este ejercicio, que combina la noción de bucles (repeticiones) con orientación y rotación espacial en un plano, resultó ser el reactivo más complejo para el curso. Constituye el punto clave de mejora para programar dinámicas guiadas en el suelo (actividades desconectadas de tipo "robot humano").
+        </div>
+      </article>
+    </section>
+
+    <!-- SECTION: Tabla Resumen Comparativa -->
+    <section class="report-section page-break-before">
+      <h2 class="report-section-title">Resumen Estadístico Comparativo (P4 - P14)</h2>
+      <div class="report-table-wrap">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Pregunta</th>
+              <th>Tema / Competencia</th>
+              <th>Clave</th>
+              <th>% Aciertos Pre (N=38)</th>
+              <th>% Aciertos Post (N=32)</th>
+              <th>Variación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>P4</strong></td><td>Concepto de Software</td><td>C</td><td>39.47%</td><td>37.50%</td><td>-1.97%</td></tr>
+            <tr><td><strong>P5</strong></td><td>Concepto de Hardware</td><td>C</td><td>26.32%</td><td>50.00%</td><td class="badge-gain-pos">+23.68% </td></tr>
+            <tr><td><strong>P6</strong></td><td>Patrones y características comunes</td><td>C</td><td>89.47%</td><td>87.50%</td><td>-1.97%</td></tr>
+            <tr><td><strong>P7</strong></td><td>Abstracción y simplificación</td><td>B</td><td>55.26%</td><td>46.88%</td><td>-8.38%</td></tr>
+            <tr><td><strong>P8</strong></td><td>Descomposición y secuencia lógica</td><td>B</td><td>63.16%</td><td>81.25%</td><td class="badge-gain-pos">+18.09% </td></tr>
+            <tr><td><strong>P9</strong></td><td>Reconocimiento de secuencias/patrones</td><td>B</td><td>52.63%</td><td>40.63%</td><td>-12.00%</td></tr>
+            <tr><td><strong>P10</strong></td><td>Secuencias numéricas aritméticas</td><td>B</td><td>84.21%</td><td>87.50%</td><td class="badge-gain-pos">+3.29%</td></tr>
+            <tr><td><strong>P11</strong></td><td>Secuencias temporales cotidianas</td><td>A</td><td>89.47%</td><td>87.50%</td><td>-1.97%</td></tr>
+            <tr><td><strong>P12</strong></td><td>Creación de algoritmos paso a paso</td><td>B</td><td>68.42%</td><td>78.13%</td><td class="badge-gain-pos">+9.71% </td></tr>
+            <tr><td><strong>P13</strong></td><td>Pensamiento condicional (If/Else)</td><td>B</td><td>73.68%</td><td>65.63%</td><td>-8.05%</td></tr>
+            <tr><td><strong>P14</strong></td><td>Bucles y orientación espacial</td><td>C</td><td>57.89%</td><td>28.13%</td><td class="badge-gain-neg">-29.76% </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION: Conclusiones y Recomendaciones -->
+    <section class="report-section page-break-before">
+      <h2 class="report-section-title">Conclusiones y Recomendaciones</h2>
+
+      <p class="report-p">
+        El análisis integral de los resultados permite afirmar que la capacitación cumplió satisfactoriamente con fortalecer las bases del pensamiento computacional en los estudiantes del Paralelo B, registrando un avance en el promedio global de <strong>6.43 a 6.53 puntos</strong> y una ganancia positiva en el grupo pareado.
+      </p>
+
+      <div style="margin-top: 18px;">
+        <div class="conclusion-item">
+          <div class="conclusion-icon positive"></div>
+          <div class="conclusion-text">
+            <strong>Fortalezas principales:</strong> Se evidenció un progreso sobresaliente en la diferenciación de componentes de <strong>Hardware (P5, +23.68%)</strong>, la ordenación cronológica de <strong>Secuencias (P8, +18.09%)</strong> y la <strong>creación autónoma de algoritmos (P12, +9.71%)</strong>, donde los estudiantes redactaron instrucciones claras y estructuradas.
+          </div>
+        </div>
+
+        <div class="conclusion-item">
+          <div class="conclusion-icon positive"></div>
+          <div class="conclusion-text">
+            <strong>Dominio consolidado:</strong> Los estudiantes demostraron un rendimiento superior al 85% de manera continua en secuencias numéricas (P10), características comunes de objetos (P6) y secuencias procedimentales cotidianas (P11).
+          </div>
+        </div>
+
+        <div class="conclusion-item">
+          <div class="conclusion-icon warning">!</div>
+          <div class="conclusion-text">
+            <strong>Oportunidades de mejora pedagógica:</strong> El descenso observado en <strong>Bucles y orientación espacial (P14)</strong>, <strong>Abstracción (P7)</strong> y <strong>Patrones alternados (P9)</strong> indica que en futuras intervenciones se debe poner énfasis especial en ejercicios prácticos kinestésicos de ubicación espacial (giros a izquierda/derecha y trayectorias), así como dinámicas de simplificación de información compleja.
+          </div>
+        </div>
+      </div>
+
+      <!-- Signatures -->
+      <div class="report-signatures">
+        <div class="signature-line">
+          <strong>Docente Responsable / Facilitador</strong>
+          Capacitación en Pensamiento Computacional
+        </div>
+        <div class="signature-line">
+          <strong>Dirección / Coordinación Académica</strong>
+          Unidad Educativa Enrique López Lascano
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../src/js/report.js"></script>
+</body>
+</html>
